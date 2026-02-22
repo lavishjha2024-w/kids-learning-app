@@ -106,7 +106,7 @@ class HomeScreen extends ConsumerWidget {
                   LearningCard(
                     title: 'Shapes',
                     description: 'Learn shapes',
-                    icon: Icons.shapes_rounded,
+                    icon: Icons.category,
                     cardColor: AppColors.peach,
                     onTap: () {
                       Navigator.push(

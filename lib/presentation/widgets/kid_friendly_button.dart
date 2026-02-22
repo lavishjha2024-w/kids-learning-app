@@ -9,7 +9,7 @@ import '../../core/constants/app_constants.dart';
 class KidFriendlyButton extends StatelessWidget {
   final String label;
   final IconData? icon;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Color? backgroundColor;
   final Color? textColor;
   final double? width;
@@ -19,7 +19,7 @@ class KidFriendlyButton extends StatelessWidget {
     super.key,
     required this.label,
     this.icon,
-    required this.onPressed,
+    this.onPressed,
     this.backgroundColor,
     this.textColor,
     this.width,
@@ -50,7 +50,7 @@ class KidFriendlyButton extends StatelessWidget {
           children: [
             if (icon != null) ...[
               Icon(icon, size: 24),
-              const SizedBox(width: AppConstants.spacingSmall),
+              SizedBox(width: AppConstants.spacingSmall),
             ],
             Text(
               label,

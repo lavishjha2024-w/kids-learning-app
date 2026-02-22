@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:math';
-import '../../core/theme/app_theme.dart';
-import '../../core/constants/app_constants.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../widgets/kid_friendly_button.dart';
 
 /// Basic math learning screen (addition & subtraction)
@@ -78,14 +78,14 @@ class _MathScreenState extends ConsumerState<MathScreen> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppConstants.spacingLarge),
+          padding: EdgeInsets.all(AppConstants.spacingLarge),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Problem display
               Card(
                 child: Padding(
-                  padding: const EdgeInsets.all(AppConstants.spacingXLarge),
+                  padding: EdgeInsets.all(AppConstants.spacingXLarge),
                   child: Column(
                     children: [
                       Row(
@@ -97,28 +97,28 @@ class _MathScreenState extends ConsumerState<MathScreen> {
                               fontSize: 64,
                             ),
                           ),
-                          const SizedBox(width: AppConstants.spacingLarge),
+                          SizedBox(width: AppConstants.spacingLarge),
                           Text(
                             _operator,
                             style: theme.textTheme.displayLarge?.copyWith(
                               fontSize: 64,
                             ),
                           ),
-                          const SizedBox(width: AppConstants.spacingLarge),
+                          SizedBox(width: AppConstants.spacingLarge),
                           Text(
                             '$_num2',
                             style: theme.textTheme.displayLarge?.copyWith(
                               fontSize: 64,
                             ),
                           ),
-                          const SizedBox(width: AppConstants.spacingLarge),
+                          SizedBox(width: AppConstants.spacingLarge),
                           Text(
                             '=',
                             style: theme.textTheme.displayLarge?.copyWith(
                               fontSize: 64,
                             ),
                           ),
-                          const SizedBox(width: AppConstants.spacingLarge),
+                          SizedBox(width: AppConstants.spacingLarge),
                           Container(
                             width: 80,
                             height: 80,
@@ -148,7 +148,7 @@ class _MathScreenState extends ConsumerState<MathScreen> {
                 ),
               ),
 
-              const SizedBox(height: AppConstants.spacingXLarge),
+              SizedBox(height: AppConstants.spacingXLarge),
 
               // Number pad
               GridView.count(
@@ -193,12 +193,12 @@ class _MathScreenState extends ConsumerState<MathScreen> {
                 }),
               ),
 
-              const SizedBox(height: AppConstants.spacingLarge),
+              SizedBox(height: AppConstants.spacingLarge),
 
               // Feedback
               if (_showFeedback)
                 Container(
-                  padding: const EdgeInsets.all(AppConstants.spacingMedium),
+                  padding: EdgeInsets.all(AppConstants.spacingMedium),
                   decoration: BoxDecoration(
                     color: _isCorrect
                         ? AppColors.successGreen.withOpacity(0.2)
@@ -217,7 +217,7 @@ class _MathScreenState extends ConsumerState<MathScreen> {
                             : AppColors.avoidRed,
                         size: 32,
                       ),
-                      const SizedBox(width: AppConstants.spacingSmall),
+                      SizedBox(width: AppConstants.spacingSmall),
                       Text(
                         _isCorrect
                             ? 'Great job! 🌟'
@@ -230,7 +230,7 @@ class _MathScreenState extends ConsumerState<MathScreen> {
                   ),
                 ),
 
-              const SizedBox(height: AppConstants.spacingLarge),
+              SizedBox(height: AppConstants.spacingLarge),
 
               // Action buttons
               Row(

@@ -151,7 +151,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                               _currentStep++;
                             });
                           }
-                        : _selectedAge != null
+                        : (_selectedAge != null
                             ? () {
                                 ref
                                     .read(settingsProvider.notifier)
@@ -162,7 +162,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                                   ),
                                 );
                               }
-                            : null,
+                            : null),
                   ),
                 ],
               ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:math';
-import '../../core/theme/app_theme.dart';
-import '../../core/constants/app_constants.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/constants/app_constants.dart';
 
 /// Memory matching game
 class MemoryScreen extends ConsumerStatefulWidget {
@@ -121,7 +121,7 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppConstants.spacingMedium),
+          padding: EdgeInsets.all(AppConstants.spacingMedium),
           child: GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,

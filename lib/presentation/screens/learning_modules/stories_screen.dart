@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/theme/app_theme.dart';
-import '../../core/constants/app_constants.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/constants/app_constants.dart';
 
 /// Stories screen with narration
 class StoriesScreen extends ConsumerWidget {
@@ -18,7 +18,7 @@ class StoriesScreen extends ConsumerWidget {
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(AppConstants.spacingXLarge),
+            padding: EdgeInsets.all(AppConstants.spacingXLarge),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -27,13 +27,13 @@ class StoriesScreen extends ConsumerWidget {
                   size: 100,
                   color: AppColors.lavender,
                 ),
-                const SizedBox(height: AppConstants.spacingLarge),
+                SizedBox(height: AppConstants.spacingLarge),
                 Text(
                   'Stories Coming Soon!',
                   style: theme.textTheme.displaySmall,
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: AppConstants.spacingMedium),
+                SizedBox(height: AppConstants.spacingMedium),
                 Text(
                   'We\'re preparing wonderful stories for you!',
                   style: theme.textTheme.bodyLarge,

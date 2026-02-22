@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/theme/app_theme.dart';
-import '../../core/constants/app_constants.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/constants/app_constants.dart';
 
 /// Simple puzzles screen
 class PuzzlesScreen extends ConsumerWidget {
@@ -18,7 +18,7 @@ class PuzzlesScreen extends ConsumerWidget {
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(AppConstants.spacingXLarge),
+            padding: EdgeInsets.all(AppConstants.spacingXLarge),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -27,13 +27,13 @@ class PuzzlesScreen extends ConsumerWidget {
                   size: 100,
                   color: AppColors.lightBlue,
                 ),
-                const SizedBox(height: AppConstants.spacingLarge),
+                SizedBox(height: AppConstants.spacingLarge),
                 Text(
                   'Puzzles Coming Soon!',
                   style: theme.textTheme.displaySmall,
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: AppConstants.spacingMedium),
+                SizedBox(height: AppConstants.spacingMedium),
                 Text(
                   'We\'re working on fun puzzles for you!',
                   style: theme.textTheme.bodyLarge,

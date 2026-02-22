@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import '../../core/theme/app_theme.dart';
-import '../../core/constants/app_constants.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../widgets/kid_friendly_button.dart';
 
 /// Alphabets learning screen with voice guidance
@@ -83,7 +83,7 @@ class _AlphabetsScreenState extends ConsumerState<AlphabetsScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: AppConstants.spacingLarge),
+                    SizedBox(height: AppConstants.spacingLarge),
                     
                     // Speak button
                     KidFriendlyButton(
@@ -98,7 +98,7 @@ class _AlphabetsScreenState extends ConsumerState<AlphabetsScreen> {
 
             // Letter grid
             Container(
-              padding: const EdgeInsets.all(AppConstants.spacingMedium),
+              padding: EdgeInsets.all(AppConstants.spacingMedium),
               decoration: BoxDecoration(
                 color: theme.scaffoldBackgroundColor,
                 boxShadow: [
@@ -143,7 +143,7 @@ class _AlphabetsScreenState extends ConsumerState<AlphabetsScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppConstants.spacingMedium),
+                  SizedBox(height: AppConstants.spacingMedium),
                   
                   // Letter grid
                   Wrap(

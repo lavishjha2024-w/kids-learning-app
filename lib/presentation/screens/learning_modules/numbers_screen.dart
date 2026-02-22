@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import '../../core/theme/app_theme.dart';
-import '../../core/constants/app_constants.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../widgets/kid_friendly_button.dart';
 
 /// Numbers learning screen with counting
@@ -107,11 +107,11 @@ class _NumbersScreenState extends ConsumerState<NumbersScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: AppConstants.spacingLarge),
+                    SizedBox(height: AppConstants.spacingLarge),
                     
                     // Visual count
                     _buildVisualCount(_currentNumber),
-                    const SizedBox(height: AppConstants.spacingLarge),
+                    SizedBox(height: AppConstants.spacingLarge),
                     
                     // Speak button
                     KidFriendlyButton(
@@ -126,7 +126,7 @@ class _NumbersScreenState extends ConsumerState<NumbersScreen> {
 
             // Navigation
             Container(
-              padding: const EdgeInsets.all(AppConstants.spacingMedium),
+              padding: EdgeInsets.all(AppConstants.spacingMedium),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

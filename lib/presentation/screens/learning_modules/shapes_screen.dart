@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import '../../core/theme/app_theme.dart';
-import '../../core/constants/app_constants.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../widgets/kid_friendly_button.dart';
 
 /// Shapes learning screen
@@ -17,7 +17,7 @@ class _ShapesScreenState extends ConsumerState<ShapesScreen> {
   final FlutterTts _tts = FlutterTts();
   int _currentShapeIndex = 0;
 
-  final List<ShapeData> _shapes = [
+  List<ShapeData> get _shapes => [
     ShapeData(name: 'Circle', color: AppColors.lightBlue, icon: Icons.circle),
     ShapeData(name: 'Square', color: AppColors.mintGreen, icon: Icons.crop_square),
     ShapeData(name: 'Triangle', color: AppColors.lavender, icon: Icons.change_history),
@@ -85,7 +85,7 @@ class _ShapesScreenState extends ConsumerState<ShapesScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: AppConstants.spacingLarge),
+                    SizedBox(height: AppConstants.spacingLarge),
                     
                     // Shape name
                     Text(
@@ -95,7 +95,7 @@ class _ShapesScreenState extends ConsumerState<ShapesScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: AppConstants.spacingLarge),
+                    SizedBox(height: AppConstants.spacingLarge),
                     
                     // Speak button
                     KidFriendlyButton(
@@ -110,7 +110,7 @@ class _ShapesScreenState extends ConsumerState<ShapesScreen> {
 
             // Shape grid
             Container(
-              padding: const EdgeInsets.all(AppConstants.spacingMedium),
+              padding: EdgeInsets.all(AppConstants.spacingMedium),
               child: Column(
                 children: [
                   // Navigation
@@ -143,7 +143,7 @@ class _ShapesScreenState extends ConsumerState<ShapesScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppConstants.spacingMedium),
+                  SizedBox(height: AppConstants.spacingMedium),
                   
                   // Shape grid
                   Wrap(

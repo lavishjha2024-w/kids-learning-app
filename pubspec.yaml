@@ -53,9 +53,3 @@ flutter:
     - assets/images/
     - assets/animations/
     - assets/audio/
-    - assets/fonts/
-  
-  fonts:
-    - family: KidsFont
-      fonts:
-        - asset: assets/fonts/kids_font.ttf
