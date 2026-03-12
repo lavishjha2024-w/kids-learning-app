@@ -1,0 +1,17 @@
+{
+  "name": "mercuryanalytics-v2-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MercuryAnalytics v2 Express API for ticks and analytics.",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node src/server.js",
+    "start": "NODE_ENV=production node src/server.js",
+    "simulate": "node scripts/simulate.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
+

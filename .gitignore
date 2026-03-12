@@ -51,3 +51,22 @@ app.*.map.json
 # Hive
 *.hive
 *.lock
+
+# --- MercuryAnalytics v2 (Node/Next/C++) ---
+**/node_modules/
+**/.next/
+**/.turbo/
+**/dist/
+**/build/
+**/*.tsbuildinfo
+**/.env
+**/.env.local
+**/.env.*.local
+backend/build-*/
+backend/build/
+backend/bin/
+backend/*.exe
+backend/*.out
+api/data/*.json
+api/data/*.ndjson
+api/data/*.log
