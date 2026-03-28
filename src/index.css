@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 33% 97%;
+    --foreground: 240 10% 25%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 25%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 25%;
+
+    --primary: 196 100% 84%;
+    --primary-foreground: 240 10% 20%;
+
+    --secondary: 150 100% 90%;
+    --secondary-foreground: 240 10% 20%;
+
+    --muted: 40 20% 93%;
+    --muted-foreground: 240 5% 50%;
+
+    --accent: 270 100% 90%;
+    --accent-foreground: 240 10% 20%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 40 20% 88%;
+    --input: 40 20% 88%;
+    --ring: 196 100% 70%;
+
+    --radius: 1rem;
+
+    /* Custom kids palette */
+    --kids-blue: 196 100% 84%;
+    --kids-mint: 150 100% 90%;
+    --kids-lavender: 270 100% 90%;
+    --kids-peach: 25 100% 87%;
+    --kids-yellow: 45 100% 88%;
+    --kids-pink: 340 100% 90%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .calm-mode {
+    --primary: 196 60% 88%;
+    --secondary: 150 60% 93%;
+    --accent: 270 60% 93%;
+    --kids-blue: 196 60% 90%;
+    --kids-mint: 150 60% 93%;
+    --kids-lavender: 270 60% 93%;
+    --kids-peach: 25 60% 92%;
+    --kids-yellow: 45 60% 93%;
+    --kids-pink: 340 60% 93%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-nunito;
+  }
+}
+
+@layer components {
+  .kids-card {
+    @apply bg-card rounded-2xl shadow-soft p-6 transition-all duration-300;
+  }
+
+  .kids-card-interactive {
+    @apply kids-card cursor-pointer hover:shadow-hover hover:-translate-y-1 active:scale-[0.98];
+  }
+
+  .kids-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl font-bold text-lg px-8 py-4 min-h-[48px] min-w-[48px] transition-all duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/50;
+  }
+
+  .kids-btn-primary {
+    @apply kids-btn bg-primary text-primary-foreground hover:brightness-95;
+  }
+
+  .kids-btn-secondary {
+    @apply kids-btn bg-secondary text-secondary-foreground hover:brightness-95;
+  }
+
+  .kids-btn-accent {
+    @apply kids-btn bg-accent text-accent-foreground hover:brightness-95;
+  }
+
+  .kids-btn-peach {
+    @apply kids-btn bg-kids-peach text-foreground hover:brightness-95;
+  }
+
+  .kids-heading {
+    @apply font-black tracking-tight;
+  }
+
+  .kids-nav-item {
+    @apply flex flex-col items-center gap-1 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 min-w-[64px] min-h-[48px];
+  }
+
+  .kids-nav-item-active {
+    @apply kids-nav-item bg-primary/30 text-primary-foreground;
+  }
+
+  .page-container {
+    @apply max-w-6xl mx-auto px-4 pb-24 pt-6;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
