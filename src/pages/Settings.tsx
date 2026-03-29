@@ -1,11 +1,16 @@
 import { useState, type ElementType } from "react";
 import { motion } from "framer-motion";
-import { Moon, Volume2, Eye, Type, Lock, Shield, Sun, Contrast, BookOpen } from "lucide-react";
+import { Moon, Volume2, Eye, Type, Lock, Shield, Sun, Contrast, BookOpen, Languages } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { useNavigate } from "react-router-dom";
+import { useI18n } from "@/context/I18nContext";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { LOCALE_LABELS } from "@/i18n/localeMeta";
+import type { LocaleCode } from "@/i18n/types";
 
 const Settings = () => {
   const { settings, updateSettings, parentPinVerified, verifyParentPin } = useApp();
+  const { t, locale, setLocale } = useI18n();
   const [pinInput, setPinInput] = useState("");
   const [pinError, setPinError] = useState(false);
   const navigate = useNavigate();
@@ -59,51 +64,71 @@ const Settings = () => {
 
   return (
     <div className="page-container max-w-xl">
-      <h1 className="kids-heading text-3xl mb-2">Comfort & care</h1>
-      <p className="text-muted-foreground font-semibold mb-8">
-        Make KLearn feel just right for your eyes, ears, and pace.
-      </p>
+      <h1 className="kids-heading text-3xl mb-2">{t("settings.title")}</h1>
+      <p className="text-muted-foreground font-semibold mb-8">{t("settings.sub")}</p>
+
+      <div className="kids-card mb-6 border border-border/50">
+        <div className="flex items-center gap-3 mb-3">
+          <Languages size={22} aria-hidden />
+          <div>
+            <span className="font-black block">{t("settings.lang")}</span>
+            <span className="text-xs text-muted-foreground font-semibold">{t("settings.lang.hint")}</span>
+          </div>
+        </div>
+        <Select value={locale} onValueChange={(v) => setLocale(v as LocaleCode)}>
+          <SelectTrigger className="rounded-2xl border-border min-h-[52px] w-full bg-background">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {(Object.keys(LOCALE_LABELS) as LocaleCode[]).map((code) => (
+              <SelectItem key={code} value={code}>
+                {LOCALE_LABELS[code]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
       <div className="space-y-3 mb-8">
         <Toggle
           enabled={settings.darkMode}
           onToggle={() => updateSettings({ darkMode: !settings.darkMode })}
-          label="Evening cozy mode"
-          desc="Gentle dark colors for low light"
+          label={t("settings.dark")}
+          desc={t("settings.dark.desc")}
           icon={Moon}
         />
         <Toggle
           enabled={settings.calmMode}
           onToggle={() => updateSettings({ calmMode: !settings.calmMode })}
-          label="Calm palette"
-          desc="Softer colors all day"
+          label={t("settings.calm")}
+          desc={t("settings.calm.desc")}
           icon={Sun}
         />
         <Toggle
           enabled={settings.highContrast}
           onToggle={() => updateSettings({ highContrast: !settings.highContrast })}
-          label="Clearer contrast"
-          desc="Easier to read text and edges"
+          label={t("settings.contrast")}
+          desc={t("settings.contrast.desc")}
           icon={Contrast}
         />
         <Toggle
           enabled={settings.soundEnabled}
           onToggle={() => updateSettings({ soundEnabled: !settings.soundEnabled })}
-          label="Sounds & spoken hints"
+          label={t("settings.sound")}
           icon={Volume2}
         />
         <Toggle
           enabled={settings.colorblindMode}
           onToggle={() => updateSettings({ colorblindMode: !settings.colorblindMode })}
-          label="Color-safe shapes"
-          desc="Extra cues besides color alone"
+          label={t("settings.colorblind")}
+          desc={t("settings.colorblind.desc")}
           icon={Eye}
         />
         <Toggle
           enabled={settings.dyslexiaFont}
           onToggle={() => updateSettings({ dyslexiaFont: !settings.dyslexiaFont })}
-          label="Reading-friendly letters"
-          desc="Uses the Lexend font style"
+          label={t("settings.dyslexia")}
+          desc={t("settings.dyslexia.desc")}
           icon={BookOpen}
         />
       </div>
@@ -112,8 +137,8 @@ const Settings = () => {
         <div className="flex items-center gap-3 mb-3">
           <Type size={22} aria-hidden />
           <div>
-            <span className="font-black block">Text size</span>
-            <span className="text-xs text-muted-foreground font-semibold">Bigger taps, bigger smiles</span>
+            <span className="font-black block">{t("settings.textsize")}</span>
+            <span className="text-xs text-muted-foreground font-semibold">{t("settings.textsize.hint")}</span>
           </div>
         </div>
         <div className="flex gap-2">
@@ -133,10 +158,8 @@ const Settings = () => {
       </div>
 
       <div className="kids-card mb-10 border border-border/50">
-        <label className="font-black block mb-1">Break reminder timing</label>
-        <p className="text-xs text-muted-foreground font-semibold mb-3">
-          After this many minutes of play, we’ll invite a soft break.
-        </p>
+        <label className="font-black block mb-1">{t("settings.break")}</label>
+        <p className="text-xs text-muted-foreground font-semibold mb-3">{t("settings.break.hint")}</p>
         <input
           type="range"
           min={20}
@@ -149,22 +172,24 @@ const Settings = () => {
           aria-valuemax={30}
           aria-valuenow={settings.breakReminderMinutes}
         />
-        <p className="text-sm font-bold text-foreground mt-1 tabular-nums">{settings.breakReminderMinutes} minutes</p>
+        <p className="text-sm font-bold text-foreground mt-1 tabular-nums">
+          {settings.breakReminderMinutes} {t("common.min")}
+        </p>
       </div>
 
       <div className="kids-card border border-border/50">
         <div className="flex items-center gap-3 mb-3">
           <Shield size={22} aria-hidden />
-          <span className="font-black">Grown-up summary</span>
+          <span className="font-black">{t("settings.parent")}</span>
         </div>
 
         {parentPinVerified ? (
           <button type="button" onClick={() => navigate("/parent")} className="kids-btn-peach w-full min-h-[52px]">
-            <Lock size={18} aria-hidden /> Open parent dashboard
+            <Lock size={18} aria-hidden /> {t("settings.parent.open")}
           </button>
         ) : (
           <div>
-            <p className="text-sm text-muted-foreground font-semibold mb-3">PIN (default 1234)</p>
+            <p className="text-sm text-muted-foreground font-semibold mb-3">{t("settings.parent.pin")}</p>
             <div className="flex gap-2 flex-wrap">
               <input
                 type="password"
@@ -177,13 +202,11 @@ const Settings = () => {
                 className="flex-1 min-w-[120px] rounded-2xl border border-border px-4 py-3 text-center text-lg font-black tracking-widest bg-muted focus:outline-none focus:ring-4 focus:ring-ring/40 min-h-[52px]"
               />
               <button type="button" onClick={handlePinSubmit} className="kids-btn-primary !px-8 min-h-[52px]">
-                Go
+                {t("common.go")}
               </button>
             </div>
             {pinError && (
-              <p className="text-sm mt-3 font-bold text-foreground bg-kids-peach/40 rounded-xl py-2 px-3">
-                That PIN doesn’t match — give it another try when you’re ready.
-              </p>
+              <p className="text-sm mt-3 font-bold text-foreground bg-kids-peach/40 rounded-xl py-2 px-3">{t("settings.parent.wrong")}</p>
             )}
           </div>
         )}

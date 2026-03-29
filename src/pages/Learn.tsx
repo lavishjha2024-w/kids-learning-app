@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Volume2, ChevronLeft, ChevronRight, Lightbulb } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
+import { useI18n } from "@/context/I18nContext";
 import { Progress } from "@/components/ui/progress";
 import { playSound } from "@/lib/sounds";
 
@@ -60,18 +61,12 @@ const colorCards = [
   { name: "Brown", swatch: "bg-amber-800/40", border: "border-amber-900/30", emoji: "🤎" },
 ];
 
-const modules: {
-  id: Module;
-  title: string;
-  emoji: string;
-  color: string;
-  desc: string;
-}[] = [
-  { id: "alphabets", title: "Alphabet", emoji: "🔤", color: "bg-kids-blue", desc: "Letters & sounds" },
-  { id: "numbers", title: "Numbers", emoji: "🔢", color: "bg-kids-mint", desc: "Count with me" },
-  { id: "shapes", title: "Shapes", emoji: "🎨", color: "bg-kids-lavender", desc: "See the shapes" },
-  { id: "colors", title: "Colors", emoji: "🌈", color: "bg-kids-peach", desc: "Name the rainbow" },
-  { id: "math", title: "Math play", emoji: "➕", color: "bg-kids-yellow", desc: "Add & multiply" },
+const modules: { id: Module; emoji: string; color: string }[] = [
+  { id: "alphabets", emoji: "🔤", color: "bg-kids-blue" },
+  { id: "numbers", emoji: "🔢", color: "bg-kids-mint" },
+  { id: "shapes", emoji: "🎨", color: "bg-kids-lavender" },
+  { id: "colors", emoji: "🌈", color: "bg-kids-peach" },
+  { id: "math", emoji: "➕", color: "bg-kids-yellow" },
 ];
 
 function rnd(min: number, max: number) {
@@ -129,14 +124,18 @@ const encouragements = [
 
 const Learn = () => {
   const navigate = useNavigate();
-  const { completeLesson, addBadge, settings, adaptive, registerMathResult, awardXp } = useApp();
+  const { t } = useI18n();
+  const { completeLesson, addBadge, settings, adaptive, registerMathResult, awardCandies } = useApp();
   const [activeModule, setActiveModule] = useState<Module>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [mathSolved, setMathSolved] = useState(0);
   const [mathProblemKey, setMathProblemKey] = useState(0);
   const [mathWrong, setMathWrong] = useState(0);
   const [showMathHint, setShowMathHint] = useState(false);
-  const mathProblem = useMemo(() => genMathProblem(adaptive.mathTier), [adaptive.mathTier, mathProblemKey]);
+  const mathProblem = useMemo(() => {
+    void mathProblemKey;
+    return genMathProblem(adaptive.mathTier);
+  }, [adaptive.mathTier, mathProblemKey]);
   const mathChoicesList = useMemo(() => mathChoices(mathProblem.answer), [mathProblem]);
 
   const speak = (text: string) => {
@@ -184,7 +183,7 @@ const Learn = () => {
   const handleMathPick = (n: number) => {
     if (n === mathProblem.answer) {
       registerMathResult(true);
-      awardXp(10);
+      awardCandies(10);
       playSound("success", settings.soundEnabled);
       setMathWrong(0);
       setShowMathHint(false);
@@ -210,12 +209,10 @@ const Learn = () => {
           onClick={() => navigate("/")}
           className="flex items-center gap-2 text-muted-foreground mb-4 font-semibold min-h-[44px]"
         >
-          <ArrowLeft size={20} aria-hidden /> Home
+          <ArrowLeft size={20} aria-hidden /> {t("nav.home")}
         </button>
-        <h1 className="kids-heading text-3xl sm:text-4xl mb-2">Learn & wander</h1>
-        <p className="text-muted-foreground font-semibold mb-6 max-w-xl">
-          Tap a path — we’ll cheer you on the whole way.
-        </p>
+        <h1 className="kids-heading text-3xl sm:text-4xl mb-2">{t("learn.title")}</h1>
+        <p className="text-muted-foreground font-semibold mb-6 max-w-xl">{t("learn.sub")}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {modules.map((m, i) => (
             <motion.button
@@ -237,8 +234,8 @@ const Learn = () => {
               <span className="text-5xl block mb-3" aria-hidden>
                 {m.emoji}
               </span>
-              <h3 className="font-bold text-xl">{m.title}</h3>
-              <p className="text-sm text-muted-foreground font-semibold">{m.desc}</p>
+              <h3 className="font-bold text-xl">{t(`learn.mod.${m.id}.title`)}</h3>
+              <p className="text-sm text-muted-foreground font-semibold">{t(`learn.mod.${m.id}.desc`)}</p>
             </motion.button>
           ))}
         </div>
@@ -274,15 +271,13 @@ const Learn = () => {
           >
             <span className="text-8xl font-black text-foreground">{letter}</span>
           </motion.div>
-          <p className="text-sm font-bold text-muted-foreground mb-1">
-            {letter} is for {word}
-          </p>
+          <p className="text-sm font-bold text-muted-foreground mb-1">{t("learn.letterFor", { letter, word })}</p>
           <button
             type="button"
             onClick={() => speak(`${letter}. ${letter} is for ${word}`)}
             className="kids-btn-primary"
           >
-            <Volume2 size={20} aria-hidden /> Hear it
+            <Volume2 size={20} aria-hidden /> {t("learn.hear")}
           </button>
         </div>
       );
@@ -300,9 +295,9 @@ const Learn = () => {
           >
             <span className="text-8xl font-black text-foreground">{num}</span>
           </motion.div>
-          <p className="text-lg font-bold mb-2">Count: {num}</p>
+          <p className="text-lg font-bold mb-2">{t("learn.count", { n: num })}</p>
           <button type="button" onClick={() => speak(String(num))} className="kids-btn-secondary">
-            <Volume2 size={20} aria-hidden /> Hear it
+            <Volume2 size={20} aria-hidden /> {t("learn.hear")}
           </button>
         </div>
       );
@@ -322,7 +317,7 @@ const Learn = () => {
           </motion.div>
           <p className="text-xl font-bold mb-2">{shape.name}</p>
           <button type="button" onClick={() => speak(shape.name)} className="kids-btn-accent">
-            <Volume2 size={20} aria-hidden /> Hear it
+            <Volume2 size={20} aria-hidden /> {t("learn.hear")}
           </button>
         </div>
       );
@@ -342,7 +337,7 @@ const Learn = () => {
           </motion.div>
           <p className="text-2xl font-black mb-2">{c.name}</p>
           <button type="button" onClick={() => speak(`This color is ${c.name}`)} className="kids-btn-peach">
-            <Volume2 size={20} aria-hidden /> Hear the name
+            <Volume2 size={20} aria-hidden /> {t("learn.hearColor")}
           </button>
         </div>
       );
@@ -351,9 +346,7 @@ const Learn = () => {
     if (activeModule === "math") {
       return (
         <div className="text-center space-y-4 max-w-md mx-auto">
-          <p className="text-sm font-bold text-muted-foreground">
-            Warm level {adaptive.mathTier} • Solve 5 friendly puzzles
-          </p>
+          <p className="text-sm font-bold text-muted-foreground">{t("learn.mathIntro", { tier: adaptive.mathTier })}</p>
           <motion.div
             key={`${mathSolved}-${mathProblem.text}`}
             initial={{ opacity: 0, y: 10 }}
@@ -361,7 +354,7 @@ const Learn = () => {
             className="kids-card bg-kids-yellow/25 border border-border/50"
           >
             <p className="kids-heading text-4xl mb-2 tabular-nums">{mathProblem.text}</p>
-            <p className="text-sm text-muted-foreground font-semibold">Tap the answer</p>
+            <p className="text-sm text-muted-foreground font-semibold">{t("learn.tapAnswer")}</p>
           </motion.div>
           {showMathHint && (
             <motion.p
@@ -403,12 +396,12 @@ const Learn = () => {
         }}
         className="flex items-center gap-2 text-muted-foreground mb-4 font-semibold min-h-[44px]"
       >
-        <ArrowLeft size={20} aria-hidden /> All topics
+        <ArrowLeft size={20} aria-hidden /> {t("learn.allTopics")}
       </button>
 
       <div className="mb-4">
         <div className="flex justify-between text-xs font-bold text-muted-foreground mb-2">
-          <span>Your path</span>
+          <span>{t("learn.path")}</span>
           <span>{activeModule === "math" ? `${mathSolved} / 5` : `${currentIndex + 1} / ${totalNonMath}`}</span>
         </div>
         <Progress value={Math.min(100, progressPct)} className="h-3 rounded-full" />
@@ -432,7 +425,7 @@ const Learn = () => {
           </span>
           <button type="button" onClick={() => handleNext(totalNonMath)} className="kids-btn-primary">
             {currentIndex === totalNonMath - 1 ? (
-              "Finish 🌟"
+              t("learn.finish")
             ) : (
               <>
                 <span className="sr-only">Next</span>

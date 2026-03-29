@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Clock, BookOpen, Gamepad2, Shield, TrendingUp, Award } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
+import { useI18n } from "@/context/I18nContext";
 import { useEffect, useMemo } from "react";
-import { getLevelFromXp } from "@/lib/gamification";
 import { Badge } from "@/components/ui/badge";
 import {
   BarChart,
@@ -17,13 +17,14 @@ import {
 
 const ParentDashboard = () => {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const { usage, settings, updateSettings, parentPinVerified } = useApp();
 
   useEffect(() => {
     if (!parentPinVerified) navigate("/settings");
   }, [parentPinVerified, navigate]);
 
-  const level = getLevelFromXp(usage.xp);
+  const candies = usage.candies;
   const trackedPlays = Object.values(usage.gameStats).reduce((n, s) => n + s.played, 0);
   const gamesShown = trackedPlays || usage.gamesPlayed;
 
@@ -44,36 +45,36 @@ const ParentDashboard = () => {
         onClick={() => navigate("/settings")}
         className="flex items-center gap-2 text-muted-foreground mb-6 font-semibold min-h-[44px]"
       >
-        <ArrowLeft size={20} aria-hidden /> Back to settings
+        <ArrowLeft size={20} aria-hidden /> {t("parent.back")}
       </button>
 
       <h1 className="kids-heading text-3xl mb-2 flex flex-wrap items-center gap-2">
-        <Shield size={28} aria-hidden /> Parent & teacher view
+        <Shield size={28} aria-hidden /> {t("parent.title")}
       </h1>
       <p className="text-muted-foreground font-semibold mb-8 max-w-2xl">
-        Usage and growth stay on this device. Celebrate effort — KLearn never punishes mistakes.
+        {t("parent.sub")} {t("parent.celebrate")}
       </p>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
         <div className="kids-card text-center border border-border/40">
           <Clock size={24} className="mx-auto mb-1 text-muted-foreground" aria-hidden />
           <p className="text-2xl font-black tabular-nums">{usage.totalMinutesToday}m</p>
-          <p className="text-xs text-muted-foreground font-bold">Active today</p>
+          <p className="text-xs text-muted-foreground font-bold">{t("parent.today")}</p>
         </div>
         <div className="kids-card text-center border border-border/40">
           <TrendingUp size={24} className="mx-auto mb-1 text-muted-foreground" aria-hidden />
-          <p className="text-2xl font-black tabular-nums">{level}</p>
-          <p className="text-xs text-muted-foreground font-bold">Current level</p>
+          <p className="text-2xl font-black tabular-nums">{candies}</p>
+          <p className="text-xs text-muted-foreground font-bold">{t("parent.level")}</p>
         </div>
         <div className="kids-card text-center border border-border/40">
           <BookOpen size={24} className="mx-auto mb-1 text-muted-foreground" aria-hidden />
           <p className="text-2xl font-black tabular-nums">{usage.lessonsCompleted.length}</p>
-          <p className="text-xs text-muted-foreground font-bold">Topics touched</p>
+          <p className="text-xs text-muted-foreground font-bold">{t("parent.topics")}</p>
         </div>
         <div className="kids-card text-center border border-border/40">
           <Gamepad2 size={24} className="mx-auto mb-1 text-muted-foreground" aria-hidden />
           <p className="text-2xl font-black tabular-nums">{gamesShown}</p>
-          <p className="text-xs text-muted-foreground font-bold">Game tries logged</p>
+          <p className="text-xs text-muted-foreground font-bold">{t("parent.tries")}</p>
         </div>
       </div>
 
@@ -84,10 +85,10 @@ const ParentDashboard = () => {
           className="kids-card border border-border/40"
         >
           <h2 className="font-black text-lg mb-3 flex items-center gap-2">
-            <Award size={20} aria-hidden /> Badges unlocked
+            <Award size={20} aria-hidden /> {t("parent.badges")}
           </h2>
           {usage.badges.length === 0 ? (
-            <p className="text-sm text-muted-foreground font-semibold">No badges yet — they’ll appear as your learner explores.</p>
+            <p className="text-sm text-muted-foreground font-semibold">{t("parent.badges.empty")}</p>
           ) : (
             <div className="flex flex-wrap gap-2">
               {usage.badges.map((b) => (
@@ -98,8 +99,7 @@ const ParentDashboard = () => {
             </div>
           )}
           <p className="text-xs text-muted-foreground mt-4 font-semibold">
-            Streak: <span className="text-foreground font-bold">{usage.streak}</span> day(s) · XP:{" "}
-            <span className="text-foreground font-bold">{usage.xp}</span>
+            {t("parent.streakCandies", { streak: String(usage.streak), candies: String(candies) })}
           </p>
         </motion.section>
 
@@ -109,9 +109,9 @@ const ParentDashboard = () => {
           transition={{ delay: 0.05 }}
           className="kids-card border border-border/40"
         >
-          <h2 className="font-black text-lg mb-3">Game activity</h2>
+          <h2 className="font-black text-lg mb-3">{t("parent.chart")}</h2>
           {chartData.length === 0 ? (
-            <p className="text-sm text-muted-foreground font-semibold">Play a mini-game to see a chart grow here.</p>
+            <p className="text-sm text-muted-foreground font-semibold">{t("parent.gameHint")}</p>
           ) : (
             <div className="h-48 w-full min-w-0">
               <ResponsiveContainer width="100%" height="100%">
@@ -126,8 +126,18 @@ const ParentDashboard = () => {
                       background: "hsl(var(--card))",
                     }}
                   />
-                  <Bar dataKey="wins" name="Wins" fill="hsl(var(--kids-mint) / 0.95)" radius={[8, 8, 0, 0]} />
-                  <Bar dataKey="played" name="Played" fill="hsl(var(--kids-lavender) / 0.85)" radius={[8, 8, 0, 0]} />
+                  <Bar
+                    dataKey="wins"
+                    name={t("parent.chart.wins")}
+                    fill="hsl(var(--kids-mint) / 0.95)"
+                    radius={[8, 8, 0, 0]}
+                  />
+                  <Bar
+                    dataKey="played"
+                    name={t("parent.chart.played")}
+                    fill="hsl(var(--kids-lavender) / 0.85)"
+                    radius={[8, 8, 0, 0]}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -135,10 +145,10 @@ const ParentDashboard = () => {
         </motion.section>
       </div>
 
-      <h2 className="font-black text-lg mb-3">Family controls</h2>
+      <h2 className="font-black text-lg mb-3">{t("parent.family")}</h2>
       <div className="space-y-3">
         <div className="kids-card border border-border/40">
-          <label className="font-black block mb-2">Daily screen-time guide (minutes)</label>
+          <label className="font-black block mb-2">{t("parent.screen")}</label>
           <input
             type="range"
             min={15}
@@ -148,11 +158,13 @@ const ParentDashboard = () => {
             onChange={(e) => updateSettings({ maxScreenTime: Number(e.target.value) })}
             className="w-full accent-primary min-h-[44px]"
           />
-          <p className="text-sm text-muted-foreground mt-1 font-semibold">{settings.maxScreenTime} minutes suggested pause point</p>
+          <p className="text-sm text-muted-foreground mt-1 font-semibold">
+            {settings.maxScreenTime} {t("parent.screen.hint")}
+          </p>
         </div>
 
         <div className="kids-card border border-border/40">
-          <label className="font-black block mb-2">Break timer length (minutes)</label>
+          <label className="font-black block mb-2">{t("parent.breaklong")}</label>
           <input
             type="range"
             min={1}
@@ -162,7 +174,9 @@ const ParentDashboard = () => {
             onChange={(e) => updateSettings({ breakDuration: Number(e.target.value) })}
             className="w-full accent-primary min-h-[44px]"
           />
-          <p className="text-sm text-muted-foreground mt-1 font-semibold">{settings.breakDuration} minutes calm countdown</p>
+          <p className="text-sm text-muted-foreground mt-1 font-semibold">
+            {settings.breakDuration} {t("parent.break.hint")}
+          </p>
         </div>
       </div>
     </div>

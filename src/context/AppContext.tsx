@@ -8,10 +8,12 @@ export interface UsageData {
   lessonsCompleted: string[];
   badges: string[];
   gamesPlayed: number;
-  xp: number;
-  points: number;
+  /** Primary reward metric (persisted in kids-usage). */
+  candies: number;
   streak: number;
   lastStreakDate: string;
+  /** First learning activity of the calendar day grants daily candy bonus. */
+  lastDailyCandyDate: string;
   gameStats: Record<string, { played: number; wins: number }>;
 }
 
@@ -26,7 +28,6 @@ export interface AppSettings {
   darkMode: boolean;
   highContrast: boolean;
   dyslexiaFont: boolean;
-  /** Minutes of active use before break reminder (25–30 typical). */
   breakReminderMinutes: number;
 }
 
@@ -45,12 +46,12 @@ interface AppContextType {
   updateSettings: (s: Partial<AppSettings>) => void;
   completeLesson: (id: string) => void;
   addBadge: (badge: string) => void;
-  awardXp: (amount: number) => void;
+  awardCandies: (amount: number) => void;
   recordStreakActivity: () => void;
   incrementGameStat: (
     gameId: string,
     won: boolean,
-    opts?: { countTowardTotalGames?: boolean; skipXpReward?: boolean },
+    opts?: { countTowardTotalGames?: boolean; skipCandyReward?: boolean },
   ) => void;
   registerMathResult: (correct: boolean) => void;
   resetFocusTimer: () => void;
@@ -66,10 +67,10 @@ const defaultUsage: UsageData = {
   lessonsCompleted: [],
   badges: [],
   gamesPlayed: 0,
-  xp: 0,
-  points: 0,
+  candies: 0,
   streak: 0,
   lastStreakDate: "",
+  lastDailyCandyDate: "",
   gameStats: {},
 };
 
@@ -93,17 +94,29 @@ const defaultAdaptive: AdaptiveState = {
   rightStreak: 0,
 };
 
+function migrateBadges(badges: string[]): string[] {
+  return badges.map((b) => (b === "xp-500" ? "candy-500" : b));
+}
+
+function migrateCandies(parsed: Record<string, unknown>): number {
+  if (typeof parsed.candies === "number") return parsed.candies;
+  const xp = typeof parsed.xp === "number" ? parsed.xp : 0;
+  const pts = typeof parsed.points === "number" ? parsed.points : 0;
+  return Math.max(0, Math.floor(xp + pts));
+}
+
 function migrateUsage(parsed: Record<string, unknown>, today: string): UsageData {
   const isNewDay = parsed.lastActive !== today;
   const base: UsageData = {
     ...defaultUsage,
     lessonsCompleted: Array.isArray(parsed.lessonsCompleted) ? (parsed.lessonsCompleted as string[]) : [],
-    badges: Array.isArray(parsed.badges) ? (parsed.badges as string[]) : [],
+    badges: migrateBadges(Array.isArray(parsed.badges) ? (parsed.badges as string[]) : []),
     gamesPlayed: typeof parsed.gamesPlayed === "number" ? parsed.gamesPlayed : 0,
-    xp: typeof parsed.xp === "number" ? parsed.xp : 0,
-    points: typeof parsed.points === "number" ? parsed.points : typeof parsed.xp === "number" ? parsed.xp : 0,
+    candies: migrateCandies(parsed),
     streak: typeof parsed.streak === "number" ? parsed.streak : 0,
     lastStreakDate: typeof parsed.lastStreakDate === "string" ? parsed.lastStreakDate : "",
+    lastDailyCandyDate:
+      typeof parsed.lastDailyCandyDate === "string" ? parsed.lastDailyCandyDate : "",
     gameStats:
       parsed.gameStats && typeof parsed.gameStats === "object"
         ? (parsed.gameStats as UsageData["gameStats"])
@@ -165,7 +178,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [parentPinVerified, setParentPinVerified] = useState(
     () => typeof sessionStorage !== "undefined" && sessionStorage.getItem("kids-parent-ok") === "1",
   );
-
   const focusMsRef = useRef(0);
   const breakMinutesRef = useRef(settings.breakReminderMinutes);
 
@@ -185,7 +197,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem("kids-adaptive", JSON.stringify(adaptive));
   }, [adaptive]);
 
-  /** Accumulate visible time; show break when threshold reached (visibility-of-system-status). */
   useEffect(() => {
     const id = window.setInterval(() => {
       if (showBreakReminder) return;
@@ -203,10 +214,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     const id = window.setInterval(() => {
       if (document.visibilityState !== "visible") return;
-      setUsage((prev) => {
-        const next = { ...prev, totalMinutesToday: prev.totalMinutesToday + 1 };
-        return next;
-      });
+      setUsage((prev) => ({ ...prev, totalMinutesToday: prev.totalMinutesToday + 1 }));
     }, 60_000);
     return () => clearInterval(id);
   }, []);
@@ -240,15 +248,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setUsage((prev) => addBadgeInternal(prev, badge));
   }, [addBadgeInternal]);
 
-  const awardXp = useCallback(
+  const awardCandies = useCallback(
     (amount: number) => {
+      if (amount <= 0) return;
       setUsage((prev) => {
         let next: UsageData = {
           ...prev,
-          xp: prev.xp + amount,
-          points: prev.points + amount,
+          candies: prev.candies + amount,
         };
-        if (next.xp >= 500) next = addBadgeInternal(next, "xp-500");
+        if (next.candies >= 500) next = addBadgeInternal(next, "candy-500");
         return next;
       });
     },
@@ -256,38 +264,59 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   );
 
   const recordStreakActivity = useCallback(() => {
+    const today = new Date().toDateString();
     setUsage((prev) => {
+      let next: UsageData = { ...prev };
+      if (prev.lastDailyCandyDate !== today) {
+        next = {
+          ...next,
+          candies: next.candies + 5,
+          lastDailyCandyDate: today,
+        };
+      }
       const { streak, lastStreakDate } = updateDailyStreak(
         prev.lastStreakDate || undefined,
         prev.streak,
       );
-      let next: UsageData = { ...prev, streak, lastStreakDate };
+      next = { ...next, streak, lastStreakDate };
       if (streak >= 3) next = addBadgeInternal(next, "streak-3");
       if (streak >= 7) next = addBadgeInternal(next, "streak-7");
+      if (next.candies >= 500) next = addBadgeInternal(next, "candy-500");
       return next;
     });
   }, [addBadgeInternal]);
 
   const completeLesson = useCallback(
     (id: string) => {
-      recordStreakActivity();
       setUsage((prev) => {
         if (prev.lessonsCompleted.includes(id)) return prev;
-        const withLesson: UsageData = {
-          ...prev,
-          lessonsCompleted: [...prev.lessonsCompleted, id],
+        const today = new Date().toDateString();
+        let next: UsageData = { ...prev };
+        if (prev.lastDailyCandyDate !== today) {
+          next = { ...next, candies: next.candies + 5, lastDailyCandyDate: today };
+        }
+        const { streak, lastStreakDate } = updateDailyStreak(
+          prev.lastStreakDate || undefined,
+          prev.streak,
+        );
+        next = { ...next, streak, lastStreakDate };
+        if (streak >= 3) next = addBadgeInternal(next, "streak-3");
+        if (streak >= 7) next = addBadgeInternal(next, "streak-7");
+        next = {
+          ...next,
+          lessonsCompleted: [...next.lessonsCompleted, id],
+          candies: next.candies + 15,
         };
-        let next = { ...withLesson, xp: withLesson.xp + 15, points: withLesson.points + 15 };
         if (id === "math") next = addBadgeInternal(next, "math-star");
-        if (next.xp >= 500) next = addBadgeInternal(next, "xp-500");
+        if (next.candies >= 500) next = addBadgeInternal(next, "candy-500");
         return next;
       });
     },
-    [addBadgeInternal, recordStreakActivity],
+    [addBadgeInternal],
   );
 
   const incrementGameStat = useCallback(
-    (gameId: string, won: boolean, opts?: { countTowardTotalGames?: boolean; skipXpReward?: boolean }) => {
+    (gameId: string, won: boolean, opts?: { countTowardTotalGames?: boolean; skipCandyReward?: boolean }) => {
       recordStreakActivity();
       setUsage((prev) => {
         const stats = { ...prev.gameStats };
@@ -301,16 +330,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           gameStats: stats,
         };
         if (won) {
-          const addXp = opts?.skipXpReward !== true;
+          const addCandy = opts?.skipCandyReward !== true;
           const bumpTotal = opts?.countTowardTotalGames !== false;
           next = {
             ...next,
-            xp: addXp ? next.xp + 10 : next.xp,
-            points: addXp ? next.points + 10 : next.points,
+            candies: addCandy ? next.candies + 10 : next.candies,
             gamesPlayed: bumpTotal ? prev.gamesPlayed + 1 : prev.gamesPlayed,
           };
         }
-        if (next.xp >= 500) next = addBadgeInternal(next, "xp-500");
+        if (next.candies >= 500) next = addBadgeInternal(next, "candy-500");
         return next;
       });
     },
@@ -357,7 +385,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updateSettings,
         completeLesson,
         addBadge,
-        awardXp,
+        awardCandies,
         recordStreakActivity,
         incrementGameStat,
         registerMathResult,

@@ -19,7 +19,7 @@ export const BADGE_CATALOG: BadgeMeta[] = [
   { id: "word-wizard", label: "Word Wizard", emoji: "✨", description: "Spelled like a wizard!" },
   { id: "streak-3", label: "3-Day Spark", emoji: "🔥", description: "Learned 3 days in a row!" },
   { id: "streak-7", label: "7-Day Glow", emoji: "🌟", description: "A whole week of learning!" },
-  { id: "xp-500", label: "Super Learner", emoji: "🚀", description: "Earned 500 XP!" },
+  { id: "candy-500", label: "Super Learner", emoji: "🚀", description: "Collected 500 candies!" },
 ];
 
 export function badgeMeta(id: string): BadgeMeta | undefined {

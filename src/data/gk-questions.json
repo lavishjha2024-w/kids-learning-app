@@ -1,0 +1,122 @@
+{
+  "questions": [
+    {
+      "id": "a1",
+      "category": "animals",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "Which animal says “meow”?",
+      "options": ["Dog", "Cat", "Cow", "Duck"],
+      "correctIndex": 1,
+      "wrongHint": "Think of a soft pet that loves to nap in sunny spots."
+    },
+    {
+      "id": "a2",
+      "category": "animals",
+      "difficulty": "easy",
+      "type": "tf",
+      "question": "Fish live in water.",
+      "correct": true,
+      "wrongHint": "Fish use gills and love to swim!"
+    },
+    {
+      "id": "a3",
+      "category": "animals",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "Which bird is known for mimicking sounds?",
+      "options": ["Eagle", "Parrot", "Owl", "Penguin"],
+      "correctIndex": 1,
+      "wrongHint": "This colorful friend can repeat words in a playful way."
+    },
+    {
+      "id": "s1",
+      "category": "space",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "What do we see in the sky at night that twinkles?",
+      "options": ["Trains", "Stars", "Kites", "Boats"],
+      "correctIndex": 1,
+      "wrongHint": "Look up on a clear night — tiny lights far away."
+    },
+    {
+      "id": "s2",
+      "category": "space",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "Which planet do we live on?",
+      "options": ["Mars", "Venus", "Earth", "Jupiter"],
+      "correctIndex": 2,
+      "wrongHint": "It’s the blue and green planet with oceans and trees."
+    },
+    {
+      "id": "s3",
+      "category": "space",
+      "difficulty": "easy",
+      "type": "image",
+      "image": "🌙",
+      "question": "What is this?",
+      "options": ["Sun", "Moon", "Cloud", "Star"],
+      "correctIndex": 1,
+      "wrongHint": "It shines at night and can look like a banana shape."
+    },
+    {
+      "id": "sc1",
+      "category": "science",
+      "difficulty": "easy",
+      "type": "tf",
+      "question": "Ice is frozen water.",
+      "correct": true,
+      "wrongHint": "When water gets very cold, it becomes solid ice."
+    },
+    {
+      "id": "sc2",
+      "category": "science",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "Plants need sunlight to make food. This process is called…",
+      "options": ["Photosynthesis", "Television", "Recycling", "Sleeping"],
+      "correctIndex": 0,
+      "wrongHint": "Leaves use sunshine to help the plant grow strong."
+    },
+    {
+      "id": "g1",
+      "category": "geography",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "Which is the biggest ocean on Earth?",
+      "options": ["Indian Ocean", "Atlantic Ocean", "Pacific Ocean", "Arctic Ocean"],
+      "correctIndex": 2,
+      "wrongHint": "It’s very wide and touches many countries."
+    },
+    {
+      "id": "g2",
+      "category": "geography",
+      "difficulty": "medium",
+      "type": "tf",
+      "question": "Mountains are always flat.",
+      "correct": false,
+      "wrongHint": "Mountains rise high with peaks and slopes."
+    },
+    {
+      "id": "e1",
+      "category": "everyday",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "What do we use to brush our teeth?",
+      "options": ["Spoon", "Toothbrush", "Sock", "Book"],
+      "correctIndex": 1,
+      "wrongHint": "It has soft bristles and keeps smiles shiny."
+    },
+    {
+      "id": "e2",
+      "category": "everyday",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "Why do we wash hands before eating?",
+      "options": ["To get wet", "To remove germs", "To paint nails", "To cool down"],
+      "correctIndex": 1,
+      "wrongHint": "Clean hands help keep our tummy happy."
+    }
+  ]
+}

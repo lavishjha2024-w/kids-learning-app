@@ -23,11 +23,12 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 const PatternGame = () => {
-  const { incrementGameStat, addBadge, awardXp, settings } = useApp();
+  const { incrementGameStat, addBadge, awardCandies, settings } = useApp();
   const [round, setRound] = useState(0);
   const [message, setMessage] = useState<string | null>(null);
 
   const { seq, answer, options } = useMemo(() => {
+    void round;
     const pat = makePattern();
     return { ...pat, options: shuffle([...COLORS]) };
   }, [round]);
@@ -37,8 +38,8 @@ const PatternGame = () => {
     if (c === answer) {
       playSound("success", settings.soundEnabled);
       setMessage("You spotted the pattern!");
-      awardXp(8);
-      incrementGameStat("pattern", true, { countTowardTotalGames: false, skipXpReward: true });
+      awardCandies(8);
+      incrementGameStat("pattern", true, { countTowardTotalGames: false, skipCandyReward: true });
       addBadge("pattern-pro");
       window.setTimeout(() => {
         setMessage(null);
@@ -47,7 +48,7 @@ const PatternGame = () => {
     } else {
       playSound("hint", settings.soundEnabled);
       setMessage("Try another color — you’re getting closer.");
-      incrementGameStat("pattern", false, { countTowardTotalGames: false, skipXpReward: true });
+      incrementGameStat("pattern", false, { countTowardTotalGames: false, skipCandyReward: true });
       window.setTimeout(() => setMessage(null), 2000);
     }
   };

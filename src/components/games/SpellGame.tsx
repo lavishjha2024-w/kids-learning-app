@@ -12,7 +12,7 @@ const ROUNDS: { word: string; emoji: string; hint: string }[] = [
 ];
 
 const SpellGame = () => {
-  const { incrementGameStat, addBadge, awardXp, settings } = useApp();
+  const { incrementGameStat, addBadge, awardCandies, settings } = useApp();
   const [i, setI] = useState(0);
   const round = ROUNDS[i % ROUNDS.length];
 
@@ -24,7 +24,7 @@ const SpellGame = () => {
     const merged = shuffle([letter, ...wrong.slice(0, 2)]);
     const display = round.word.slice(0, wi) + "_" + round.word.slice(wi + 1);
     return { display, correctLetter: letter, choices: merged };
-  }, [i]);
+  }, [round.word]);
 
   const [feedback, setFeedback] = useState<"ok" | "retry" | null>(null);
 
@@ -34,16 +34,16 @@ const SpellGame = () => {
       if (letter === correctLetter) {
         playSound("success", settings.soundEnabled);
         setFeedback("ok");
-        awardXp(7);
-        incrementGameStat("spell", true, { countTowardTotalGames: false, skipXpReward: true });
+        awardCandies(7);
+        incrementGameStat("spell", true, { countTowardTotalGames: false, skipCandyReward: true });
         addBadge("word-wizard");
       } else {
         playSound("hint", settings.soundEnabled);
         setFeedback("retry");
-        incrementGameStat("spell", false, { countTowardTotalGames: false, skipXpReward: true });
+        incrementGameStat("spell", false, { countTowardTotalGames: false, skipCandyReward: true });
       }
     },
-    [feedback, correctLetter, settings.soundEnabled, awardXp, incrementGameStat, addBadge],
+    [feedback, correctLetter, settings.soundEnabled, awardCandies, incrementGameStat, addBadge],
   );
 
   const nextWord = () => {

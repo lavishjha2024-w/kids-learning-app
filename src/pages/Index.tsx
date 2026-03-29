@@ -1,23 +1,26 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { BookOpen, Gamepad2, BarChart3, Sparkles, Flame, Star } from "lucide-react";
+import { BookOpen, Gamepad2, BarChart3, Sparkles, Flame, Globe, Pencil } from "lucide-react";
 import mascot from "@/assets/mascot.png";
 import heroBg from "@/assets/hero-bg.jpg";
 import MoodCheck from "@/components/MoodCheck";
 import { useApp } from "@/context/AppContext";
-import { getLevelFromXp } from "@/lib/gamification";
+import { useI18n } from "@/context/I18nContext";
+import { CandyCount } from "@/features/candy/CandyCount";
 
 const features = [
-  { icon: BookOpen, label: "Learn", desc: "Letters, math & colors", path: "/learn", color: "bg-kids-blue" },
-  { icon: Gamepad2, label: "Play", desc: "Six mini worlds", path: "/games", color: "bg-kids-mint" },
-  { icon: BarChart3, label: "Progress", desc: "Levels & badges", path: "/progress", color: "bg-kids-lavender" },
+  { icon: BookOpen, labelKey: "home.card.learn", descKey: "home.card.learn.desc", path: "/learn", color: "bg-kids-blue" },
+  { icon: Gamepad2, labelKey: "home.card.play", descKey: "home.card.play.desc", path: "/games", color: "bg-kids-mint" },
+  { icon: BarChart3, labelKey: "home.card.progress", descKey: "home.card.progress.desc", path: "/progress", color: "bg-kids-lavender" },
+  { icon: Globe, labelKey: "home.card.gk", descKey: "home.card.gk.desc", path: "/gk", color: "bg-kids-peach" },
+  { icon: Pencil, labelKey: "home.card.scribble", descKey: "home.card.scribble.desc", path: "/scribble", color: "bg-kids-yellow" },
 ];
 
 const Index = () => {
   const navigate = useNavigate();
   const { usage } = useApp();
-  const level = getLevelFromXp(usage.xp);
+  const { t } = useI18n();
 
   const [moodDone, setMoodDone] = useState(() => {
     const last = localStorage.getItem("kids-mood-date");
@@ -49,11 +52,9 @@ const Index = () => {
             transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
           />
           <h1 className="kids-heading text-3xl sm:text-5xl text-foreground drop-shadow-sm">
-            Hi, friend! <Sparkles className="inline w-7 h-7 text-kids-yellow" aria-hidden />
+            {t("home.hero")} <Sparkles className="inline w-7 h-7 text-kids-yellow" aria-hidden />
           </h1>
-          <p className="text-muted-foreground font-bold mt-2 max-w-md text-balance">
-            KLearn is your cozy corner for tiny wins and big curiosity.
-          </p>
+          <p className="text-muted-foreground font-bold mt-2 max-w-md text-balance">{t("home.sub")}</p>
 
           <motion.div
             initial={{ opacity: 0, y: 8 }}
@@ -62,12 +63,14 @@ const Index = () => {
             className="flex flex-wrap justify-center gap-3 mt-6"
           >
             <div className="flex items-center gap-2 rounded-2xl bg-card/90 backdrop-blur px-4 py-2 border border-border/50 shadow-soft">
-              <Star className="text-kids-yellow fill-kids-yellow" size={20} aria-hidden />
-              <span className="font-black text-sm">Level {level}</span>
+              <span className="text-lg" aria-hidden>
+                🍬
+              </span>
+              <CandyCount count={usage.candies} className="font-black text-sm" />
             </div>
             <div className="flex items-center gap-2 rounded-2xl bg-card/90 backdrop-blur px-4 py-2 border border-border/50 shadow-soft">
               <Flame className="text-orange-500" size={20} aria-hidden />
-              <span className="font-black text-sm">{usage.streak} day streak</span>
+              <span className="font-black text-sm">{t("home.streak", { n: usage.streak })}</span>
             </div>
           </motion.div>
         </div>
@@ -79,11 +82,11 @@ const Index = () => {
         </div>
       )}
 
-      <h2 className="sr-only">Where do you want to go?</h2>
+      <h2 className="sr-only">{t("home.sr.go")}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         {features.map((f, i) => (
           <motion.button
-            key={f.label}
+            key={f.labelKey}
             type="button"
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -94,8 +97,8 @@ const Index = () => {
             <div className={`w-14 h-14 ${f.color} rounded-2xl flex items-center justify-center mb-3 shadow-soft`}>
               <f.icon size={28} className="text-foreground" aria-hidden />
             </div>
-            <h3 className="font-black text-xl">{f.label}</h3>
-            <p className="text-sm text-muted-foreground font-semibold">{f.desc}</p>
+            <h3 className="font-black text-xl">{t(f.labelKey)}</h3>
+            <p className="text-sm text-muted-foreground font-semibold">{t(f.descKey)}</p>
           </motion.button>
         ))}
       </div>
@@ -106,8 +109,8 @@ const Index = () => {
         transition={{ delay: 0.35 }}
         className="kids-card bg-kids-mint/25 text-center border border-border/40"
       >
-        <p className="font-bold text-lg">Tiny sips of water help your brain sparkle.</p>
-        <p className="text-sm text-muted-foreground font-semibold mt-1">You choose the pace — we’re proud of you.</p>
+        <p className="font-bold text-lg">{t("home.water")}</p>
+        <p className="text-sm text-muted-foreground font-semibold mt-1">{t("home.pace")}</p>
       </motion.div>
     </div>
   );

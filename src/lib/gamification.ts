@@ -1,16 +1,12 @@
-/** XP needed per level (linear). Level 1 = 0–99 XP, level 2 = 100–199, … */
-export const XP_PER_LEVEL = 100;
+/** Progress ring toward the next candy milestone (same visual slot as former XP bar). */
+export const CANDY_MILESTONE = 100;
 
-export function getLevelFromXp(xp: number): number {
-  return Math.floor(xp / XP_PER_LEVEL) + 1;
+export function getCandyProgressPercent(candies: number): number {
+  return ((candies % CANDY_MILESTONE) / CANDY_MILESTONE) * 100;
 }
 
-export function getXpInCurrentLevel(xp: number): number {
-  return xp % XP_PER_LEVEL;
-}
-
-export function getLevelProgressPercent(xp: number): number {
-  return (getXpInCurrentLevel(xp) / XP_PER_LEVEL) * 100;
+export function getCandyInCurrentMilestone(candies: number): number {
+  return candies % CANDY_MILESTONE;
 }
 
 export function updateDailyStreak(

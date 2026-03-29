@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Pause, Play } from "lucide-react";
 import { useApp } from "@/context/AppContext";
+import { useI18n } from "@/context/I18nContext";
 
 const BreakReminder = () => {
   const { showBreakReminder, setShowBreakReminder, settings, resetFocusTimer } = useApp();
+  const { t } = useI18n();
   const [timeLeft, setTimeLeft] = useState(settings.breakDuration * 60);
   const [phase, setPhase] = useState<"remind" | "breathing">("remind");
   const [paused, setPaused] = useState(false);
@@ -25,7 +27,7 @@ const BreakReminder = () => {
       setPhase("remind");
       return;
     }
-    const timer = window.setInterval(() => setTimeLeft((t) => t - 1), 1000);
+    const timer = window.setInterval(() => setTimeLeft((x) => x - 1), 1000);
     return () => clearInterval(timer);
   }, [showBreakReminder, phase, timeLeft, paused, setShowBreakReminder, resetFocusTimer]);
 
@@ -63,29 +65,19 @@ const BreakReminder = () => {
                   🌤️
                 </div>
                 <h2 id="break-title" className="kids-heading text-2xl mb-2">
-                  Time for a short break
+                  {t("break.title")}
                 </h2>
-                <p className="text-muted-foreground mb-6 text-balance">
-                  You’ve been doing amazing work. Let’s rest your eyes and wiggle your body for a bit.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => setPhase("breathing")}
-                  className="kids-btn-primary w-full"
-                >
-                  Start a calm break 🧘
+                <p className="text-muted-foreground mb-6 text-balance">{t("break.body")}</p>
+                <button type="button" onClick={() => setPhase("breathing")} className="kids-btn-primary w-full">
+                  {t("break.start")}
                 </button>
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="mt-4 w-full kids-btn-secondary text-base"
-                >
-                  I’ll rest later — keep learning
+                <button type="button" onClick={handleClose} className="mt-4 w-full kids-btn-secondary text-base">
+                  {t("break.later")}
                 </button>
               </>
             ) : (
               <>
-                <h2 className="kids-heading text-xl mb-4">Breathe slowly with Owly</h2>
+                <h2 className="kids-heading text-xl mb-4">{t("break.breathe")}</h2>
                 <motion.div
                   animate={paused ? undefined : { scale: [1, 1.22, 1] }}
                   transition={paused ? undefined : { duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -107,16 +99,16 @@ const BreakReminder = () => {
                   >
                     {paused ? (
                       <>
-                        <Play size={18} /> Resume
+                        <Play size={18} /> {t("break.resume")}
                       </>
                     ) : (
                       <>
-                        <Pause size={18} /> Pause
+                        <Pause size={18} /> {t("break.pause")}
                       </>
                     )}
                   </button>
                   <button type="button" onClick={handleClose} className="kids-btn-primary flex-1 min-w-[120px] text-base">
-                    Done — I’m ready
+                    {t("break.done")}
                   </button>
                 </div>
               </>

@@ -11,7 +11,7 @@ const QUESTIONS = [
 ];
 
 const QuizGame = () => {
-  const { incrementGameStat, addBadge, awardXp, settings } = useApp();
+  const { incrementGameStat, addBadge, awardCandies, settings } = useApp();
   const [idx, setIdx] = useState(0);
   const [feedback, setFeedback] = useState<"yes" | "try" | null>(null);
   const [score, setScore] = useState(0);
@@ -29,15 +29,15 @@ const QuizGame = () => {
           if (n >= 6) addBadge("quiz-hero");
           return n;
         });
-        awardXp(5);
-        incrementGameStat("quiz", true, { countTowardTotalGames: false, skipXpReward: true });
+        awardCandies(5);
+        incrementGameStat("quiz", true, { countTowardTotalGames: false, skipCandyReward: true });
       } else {
         playSound("hint", settings.soundEnabled);
         setFeedback("try");
-        incrementGameStat("quiz", false, { countTowardTotalGames: false, skipXpReward: true });
+        incrementGameStat("quiz", false, { countTowardTotalGames: false, skipCandyReward: true });
       }
     },
-    [feedback, question, settings.soundEnabled, awardXp, incrementGameStat, addBadge],
+    [feedback, question, settings.soundEnabled, awardCandies, incrementGameStat, addBadge],
   );
 
   const next = () => {
