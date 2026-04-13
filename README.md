@@ -2,6 +2,8 @@
 
 This project is an interactive learning website designed for children aged 4–10 years. It is developed as part of a Human-Computer Interaction (HCI) project with a focus on creating a user interface that is intuitive, safe, and supportive of children’s cognitive and mental well-being.
 
+Try yourself at : https://kidslearningapp-seven.vercel.app/
+
 ---
 
 ## Project Objective
